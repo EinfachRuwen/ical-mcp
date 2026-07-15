@@ -34,7 +34,7 @@ async def _get_client() -> CalDAVClient:
     if _client is not None:
         return _client
     _config = Config.from_env()
-    client = CalDAVClient(_config.url, _config.username, _config.password)
+    client = CalDAVClient(_config.url, _config.username, _config.password, _config.timezone)
     await client.discover()
     _client = client
     return client

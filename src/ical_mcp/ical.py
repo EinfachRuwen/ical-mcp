@@ -25,6 +25,7 @@ def generate_vcalendar(
     description: str | None = None,
     location: str | None = None,
     all_day: bool = False,
+    tzid: str | None = None,
 ) -> str:
     now = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
@@ -42,8 +43,12 @@ def generate_vcalendar(
         lines.append(f"DTSTART;VALUE=DATE:{_to_date(start)}")
         lines.append(f"DTEND;VALUE=DATE:{_to_date(end)}")
     else:
-        lines.append(f"DTSTART:{_to_ical_datetime(start)}")
-        lines.append(f"DTEND:{_to_ical_datetime(end)}")
+        if tzid and tzid != "UTC":
+            lines.append(f"DTSTART;TZID={tzid}:{_to_ical_datetime(start, tzid)}")
+            lines.append(f"DTEND;TZID={tzid}:{_to_ical_datetime(end, tzid)}")
+        else:
+            lines.append(f"DTSTART:{_to_ical_datetime(start)}")
+            lines.append(f"DTEND:{_to_ical_datetime(end)}")
 
     if description:
         lines.append(f"DESCRIPTION:{_escape(description)}")
@@ -162,8 +167,16 @@ def _unescape(text: str) -> str:
     )
 
 
-def _to_ical_datetime(iso: str) -> str:
+def _to_ical_datetime(iso: str, tzid: str | None = None) -> str:
     dt = datetime.fromisoformat(iso)
+    if tzid and tzid != "UTC":
+        try:
+            tz = ZoneInfo(tzid)
+            local_dt = dt.astimezone(tz)
+            return local_dt.strftime("%Y%m%dT%H%M%S")
+        except KeyError:
+            pass
+
     utc = dt.astimezone(timezone.utc)
     return utc.strftime("%Y%m%dT%H%M%SZ")
 
