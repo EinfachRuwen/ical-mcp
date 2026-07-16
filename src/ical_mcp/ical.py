@@ -39,13 +39,21 @@ def generate_vcalendar(
         f"SUMMARY:{_escape(title)}",
     ]
 
+    valid_tzid = None
+    if tzid and tzid != "UTC":
+        try:
+            ZoneInfo(tzid)
+            valid_tzid = tzid
+        except KeyError:
+            pass
+
     if all_day:
         lines.append(f"DTSTART;VALUE=DATE:{_to_date(start)}")
         lines.append(f"DTEND;VALUE=DATE:{_to_date(end)}")
     else:
-        if tzid and tzid != "UTC":
-            lines.append(f"DTSTART;TZID={tzid}:{_to_ical_datetime(start, tzid)}")
-            lines.append(f"DTEND;TZID={tzid}:{_to_ical_datetime(end, tzid)}")
+        if valid_tzid:
+            lines.append(f"DTSTART;TZID={valid_tzid}:{_to_ical_datetime(start, valid_tzid)}")
+            lines.append(f"DTEND;TZID={valid_tzid}:{_to_ical_datetime(end, valid_tzid)}")
         else:
             lines.append(f"DTSTART:{_to_ical_datetime(start)}")
             lines.append(f"DTEND:{_to_ical_datetime(end)}")
