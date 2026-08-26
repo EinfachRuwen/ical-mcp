@@ -2,11 +2,9 @@ version: '3.8'
 
 services:
   ical-mcp:
-    build:
-      # Baut direkt aus deinem GitHub-Repo - kein git clone nötig!
-      # Um auf Updates zu ziehen: docker compose build --no-cache && docker compose up -d
-      context: https://github.com/EinfachRuwen/ical-mcp.git#main
-      dockerfile: Dockerfile
+    # Fertiges Image von GitHub Container Registry
+    # Wird automatisch aktualisiert wenn du auf GitHub pushst
+    image: ghcr.io/einfachruwen/ical-mcp:latest
     container_name: ical-mcp
     ports:
       - "8093:8093"

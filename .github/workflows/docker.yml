@@ -1,0 +1,37 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx (ARM64 support für Raspberry Pi)
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Baut für AMD64 (normale Server) und ARM64 (Raspberry Pi)
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/einfachruwen/ical-mcp:latest
+            ghcr.io/einfachruwen/ical-mcp:${{ github.sha }}
