@@ -23,4 +23,9 @@ services:
 
       # Welche Kalender dürfen beschrieben werden? (* = alle, oder z.B. "Privat,Arbeit")
       ICAL_MCP_WRITABLE_CALENDARS: "*"
+
+      # Sicherheit: Bearer Token - trag hier einen langen, zufälligen String ein!
+      # Deine KI muss diesen Token beim Verbinden angeben.
+      # Generieren z.B. mit: openssl rand -hex 32
+      ICAL_MCP_API_KEY: "HIER_EINEN_SICHEREN_ZUFAELLIGEN_TOKEN_EINTRAGEN"
     restart: unless-stopped
