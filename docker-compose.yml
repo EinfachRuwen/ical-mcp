@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ical-mcp:
+    build: .
+    container_name: ical-mcp
+    ports:
+      - "8093:8093"
+    environment:
+      # iCloud / CalDAV Credentials
+      - ICAL_MCP_URL=${ICAL_MCP_URL}
+      - ICAL_MCP_USERNAME=${ICAL_MCP_USERNAME}
+      - ICAL_MCP_PASSWORD=${ICAL_MCP_PASSWORD}
+      
+      # Die reparierte Zeitzonen-Einstellung (z.B. Europe/Berlin)
+      - ICAL_MCP_TIMEZONE=${ICAL_MCP_TIMEZONE:-Europe/Berlin}
+      
+      # Welche Kalender dürfen beschrieben werden? (Name oder ID, Komma-getrennt, oder * für alle)
+      - ICAL_MCP_WRITABLE_CALENDARS=${ICAL_MCP_WRITABLE_CALENDARS}
+    restart: unless-stopped
