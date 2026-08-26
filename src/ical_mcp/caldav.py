@@ -28,7 +28,7 @@ NS_APPLE = "http://apple.com/ns/ical/"
 
 
 class CalDAVClient:
-    def __init__(self, url: str, username: str, password: str) -> None:
+    def __init__(self, url: str, username: str, password: str, timezone: str = "UTC") -> None:
         self._base_url = url.rstrip("/")
         self._client = httpx.AsyncClient(
             auth=httpx.BasicAuth(username, password),
@@ -39,6 +39,7 @@ class CalDAVClient:
         self._principal_url: str | None = None
         self._calendar_home: str | None = None
         self._calendars: dict[str, Calendar] = {}
+        self._timezone = timezone
 
     async def close(self) -> None:
         await self._client.aclose()
@@ -188,6 +189,7 @@ class CalDAVClient:
             description=description,
             location=location,
             all_day=all_day,
+            tzid=self._timezone,
         )
         url = f"{calendar.url.rstrip('/')}/{uid}.ics"
         resp = await self._client.put(
@@ -251,6 +253,7 @@ class CalDAVClient:
             description=merged_desc,
             location=merged_loc,
             all_day=merged_all_day,
+            tzid=self._timezone,
         )
         resp = await self._client.put(
             url,

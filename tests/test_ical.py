@@ -115,3 +115,27 @@ class TestGenerateVCalendar:
         assert e.title == "Roundtrip test"
         assert "With special chars: commas, semicolons; etc" in e.description
         assert e.location == "Room A, Building 5"
+
+    def test_timezone_valid(self) -> None:
+        ical = generate_vcalendar(
+            uid="tz-001",
+            title="Berlin Meeting",
+            start="2026-07-15T14:00:00+02:00",
+            end="2026-07-15T15:00:00+02:00",
+            tzid="Europe/Berlin",
+        )
+        assert "DTSTART;TZID=Europe/Berlin:20260715T140000" in ical
+        assert "DTEND;TZID=Europe/Berlin:20260715T150000" in ical
+
+    def test_timezone_invalid_fallback(self) -> None:
+        ical = generate_vcalendar(
+            uid="tz-002",
+            title="Bad Zone Meeting",
+            start="2026-07-15T14:00:00+02:00",
+            end="2026-07-15T15:00:00+02:00",
+            tzid="Bad/Zone",
+        )
+        # Should gracefully fall back to UTC and not include TZID
+        assert "DTSTART:20260715T120000Z" in ical
+        assert "DTEND:20260715T130000Z" in ical
+        assert "TZID" not in ical
