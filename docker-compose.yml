@@ -11,14 +11,18 @@ services:
     ports:
       - "8093:8093"
     environment:
-      # iCloud / CalDAV Credentials
-      - ICAL_MCP_URL=${ICAL_MCP_URL}
-      - ICAL_MCP_USERNAME=${ICAL_MCP_USERNAME}
-      - ICAL_MCP_PASSWORD=${ICAL_MCP_PASSWORD}
+      # iCloud / CalDAV Server URL
+      ICAL_MCP_URL: "https://caldav.icloud.com"
 
-      # Zeitzonen-Fix (z.B. Europe/Berlin) - verhindert das GMT+0 Problem
-      - ICAL_MCP_TIMEZONE=${ICAL_MCP_TIMEZONE:-Europe/Berlin}
+      # Deine Apple-ID E-Mail-Adresse
+      ICAL_MCP_USERNAME: "deine@icloud.com"
 
-      # Welche Kalender dürfen beschrieben werden? (* = alle)
-      - ICAL_MCP_WRITABLE_CALENDARS=${ICAL_MCP_WRITABLE_CALENDARS}
+      # App-spezifisches Passwort (erzeugen unter account.apple.com)
+      ICAL_MCP_PASSWORD: "xxxx-xxxx-xxxx-xxxx"
+
+      # Zeitzone - verhindert das GMT+0 Problem in Apple Calendar
+      ICAL_MCP_TIMEZONE: "Europe/Berlin"
+
+      # Welche Kalender dürfen beschrieben werden? (* = alle, oder z.B. "Privat,Arbeit")
+      ICAL_MCP_WRITABLE_CALENDARS: "*"
     restart: unless-stopped
