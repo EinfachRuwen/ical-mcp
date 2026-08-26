@@ -5,7 +5,6 @@ CalDAV-based MCP server for Apple Calendar (iCloud) and other CalDAV providers. 
 ## Development
 
 ```bash
-cd /Users/matthew/_projects/ical-mcp
 uv sync
 uv run pytest
 uv run ical-mcp                                          # stdio (local)
