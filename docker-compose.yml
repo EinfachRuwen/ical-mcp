@@ -2,7 +2,11 @@ version: '3.8'
 
 services:
   ical-mcp:
-    build: .
+    build:
+      # Baut direkt aus deinem GitHub-Repo - kein git clone nötig!
+      # Um auf Updates zu ziehen: docker compose build --no-cache && docker compose up -d
+      context: https://github.com/EinfachRuwen/ical-mcp.git#main
+      dockerfile: Dockerfile
     container_name: ical-mcp
     ports:
       - "8093:8093"
@@ -11,10 +15,10 @@ services:
       - ICAL_MCP_URL=${ICAL_MCP_URL}
       - ICAL_MCP_USERNAME=${ICAL_MCP_USERNAME}
       - ICAL_MCP_PASSWORD=${ICAL_MCP_PASSWORD}
-      
-      # Die reparierte Zeitzonen-Einstellung (z.B. Europe/Berlin)
+
+      # Zeitzonen-Fix (z.B. Europe/Berlin) - verhindert das GMT+0 Problem
       - ICAL_MCP_TIMEZONE=${ICAL_MCP_TIMEZONE:-Europe/Berlin}
-      
-      # Welche Kalender dürfen beschrieben werden? (Name oder ID, Komma-getrennt, oder * für alle)
+
+      # Welche Kalender dürfen beschrieben werden? (* = alle)
       - ICAL_MCP_WRITABLE_CALENDARS=${ICAL_MCP_WRITABLE_CALENDARS}
     restart: unless-stopped
